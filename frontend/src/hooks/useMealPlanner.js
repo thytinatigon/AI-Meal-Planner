@@ -3,13 +3,18 @@ import { useState } from "react";
 
 export const useMealPlanner = () => {
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [recipe, setRecipe] = useState(null);
   const [diet, setDiet] = useState("ăn mặn");
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   const handleImageChange = (e) => {
-    if (e.target.files[0]) setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file); 
+      setImagePreview(URL.createObjectURL(file)); 
+    }
   };
 
   const fileToBase64 = async (file) => {
@@ -62,6 +67,7 @@ export const useMealPlanner = () => {
 
   return {
     image,
+    imagePreview,
     loading,
     recipe,
     diet,

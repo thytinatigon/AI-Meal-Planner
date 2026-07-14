@@ -6,6 +6,7 @@ import InstructionSteps from "./components/InstructionSteps";
 
 export default function App() {
   const {
+    imagePreview,
     loading,
     recipe,
     diet,
@@ -25,6 +26,7 @@ export default function App() {
         onImageChange={handleImageChange} 
         onProcess={handleProcess} 
         loading={loading} 
+        image={imagePreview}
       />
 
       {/* Chỉ hiển thị các phần dưới khi đã có kết quả từ AI */}
