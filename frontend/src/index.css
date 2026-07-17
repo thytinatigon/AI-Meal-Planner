@@ -1,2 +1,10 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Chelsea+Market&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Londrina+Solid:wght@100;300;400;900&family=Slackey&display=swap');
+
+body {
+    font-family: "DM Sans", sans-serif;
+}
+
+@theme {
+  --font-chelsea: "Chelsea Market", cursive;
+}
