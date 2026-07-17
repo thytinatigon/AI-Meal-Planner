@@ -8,6 +8,7 @@ export default function App() {
   // Đã dọn dẹp sạch sẽ: Xóa các biến bị lặp lại và dùng đúng tên biến 'image'
   const {
     image, // Sửa 'imagePreview' thành 'image' cho đúng với useMealPlanner
+    imagePreview,
     loading,
     recipe,
     detectedIngredients,
@@ -25,7 +26,7 @@ export default function App() {
 
   return (
     <main
-      className="relative mx-auto w-full min-w-[400px] max-w-[400px] overflow-hidden bg-white"
+      className="relative mx-auto w-full min-w-100 max-w-100 overflow-hidden bg-white"
       data-model-id="23:16"
     >
       {/* 
@@ -35,8 +36,8 @@ export default function App() {
       <HeroSection 
         onImageChange={handleImageChange} 
         onProcess={handleProcess} 
-        loading={loading} 
-        image={image} 
+        loading={loading}
+        image={imagePreview}
       />
 
       {/* HIỆN BƯỚC 1: KHI ĐÃ QUÉT ĐƯỢC NGUYÊN LIỆU (Chưa cần có recipe) */}
