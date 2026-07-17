@@ -24,8 +24,11 @@ export const useMealPlanner = () => {
   // const [selectedIngredients, setSelectedIngredients] = useState(MOCK_DATA);
 
   const handleImageChange = (e) => {
-    if (e.target.files[0]) setImage(e.target.files[0]);
-    setImagePreview(URL.createObjectURL(file));
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   // HÀM fileToBase64
@@ -111,7 +114,7 @@ export const useMealPlanner = () => {
     } finally {
       setLoading(false);
     }
-    
+  };
 
     // ==========================================
     // ✅ DÙNG MOCK DATA (DỮ LIỆU GIẢ LẬP) ĐỂ TEST UI
@@ -127,8 +130,7 @@ export const useMealPlanner = () => {
     //   setDetectedIngredients(mockIngredients);
     //   setSelectedIngredients(mockIngredients); // Tự động tick chọn hết
     //   setLoading(false);
-    // }, 1500); 
-  };  
+    // }, 1500);   
 
   // Hiện khi bấm nút Cook
   const handleStartCooking = async () => {
@@ -191,6 +193,7 @@ export const useMealPlanner = () => {
     loading,
     imagePreview,
     recipe,
+    cooking,
     detectedIngredients,
     diet,
     setDiet,
