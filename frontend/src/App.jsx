@@ -5,7 +5,9 @@ import IngredientCheck from "./components/IngredientCheck";
 import InstructionSteps from "./components/InstructionSteps";
 
 export default function App() {
+  // Đã dọn dẹp sạch sẽ: Xóa các biến bị lặp lại và dùng đúng tên biến 'image'
   const {
+    image, // Sửa 'imagePreview' thành 'image' cho đúng với useMealPlanner
     loading,
     recipe,
     detectedIngredients,
@@ -18,16 +20,7 @@ export default function App() {
     toggleIngredient,
     handleStartCooking,
     updateIngredient,
-    addIngredient,
-    imagePreview,
-    loading,
-    recipe,
-    diet,
-    setDiet,
-    selectedIngredients,
-    handleImageChange,
-    handleProcess,
-    toggleIngredient
+    addIngredient
   } = useMealPlanner();
 
   return (
@@ -35,17 +28,20 @@ export default function App() {
       className="relative mx-auto w-full min-w-[400px] max-w-[400px] overflow-hidden bg-white"
       data-model-id="23:16"
     >
+      {/* 
+        Đã truyền đúng các prop mà HeroSection mới yêu cầu: 
+        onImageChange, onProcess, loading, image 
+      */}
       <HeroSection 
         onImageChange={handleImageChange} 
         onProcess={handleProcess} 
         loading={loading} 
-        image={imagePreview}
+        image={image} 
       />
 
       {/* HIỆN BƯỚC 1: KHI ĐÃ QUÉT ĐƯỢC NGUYÊN LIỆU (Chưa cần có recipe) */}
       {detectedIngredients && (
         <IngredientCheck 
-          // Truyền danh sách quét được vào để giao diện hiển thị
           detectedIngredients={detectedIngredients} 
           diet={diet} 
           setDiet={setDiet} 
