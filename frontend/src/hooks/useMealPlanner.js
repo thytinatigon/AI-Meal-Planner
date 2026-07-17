@@ -11,6 +11,7 @@ const MOCK_DATA = [
 export const useMealPlanner = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const [cooking, setCooking] = useState(false);
   const [detectedIngredients, setDetectedIngredients] = useState(null);
   const [recipe, setRecipe] = useState(null);
@@ -18,11 +19,13 @@ export const useMealPlanner = () => {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [showInstructions, setShowInstructions] = useState(false);
 
+
   // const [detectedIngredients, setDetectedIngredients] = useState(MOCK_DATA); 
   // const [selectedIngredients, setSelectedIngredients] = useState(MOCK_DATA);
 
   const handleImageChange = (e) => {
     if (e.target.files[0]) setImage(e.target.files[0]);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   // HÀM fileToBase64
@@ -186,6 +189,7 @@ export const useMealPlanner = () => {
   return {
     image,
     loading,
+    imagePreview,
     recipe,
     detectedIngredients,
     diet,

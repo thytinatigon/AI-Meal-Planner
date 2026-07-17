@@ -18,7 +18,16 @@ export default function App() {
     toggleIngredient,
     handleStartCooking,
     updateIngredient,
-    addIngredient
+    addIngredient,
+    imagePreview,
+    loading,
+    recipe,
+    diet,
+    setDiet,
+    selectedIngredients,
+    handleImageChange,
+    handleProcess,
+    toggleIngredient
   } = useMealPlanner();
 
   return (
@@ -30,6 +39,7 @@ export default function App() {
         onImageChange={handleImageChange} 
         onProcess={handleProcess} 
         loading={loading} 
+        image={imagePreview}
       />
 
       {/* HIỆN BƯỚC 1: KHI ĐÃ QUÉT ĐƯỢC NGUYÊN LIỆU (Chưa cần có recipe) */}
@@ -53,6 +63,7 @@ export default function App() {
           recipe={recipe} 
         />
       )}
+      
     </main>
   );
 }
