@@ -106,18 +106,11 @@ export default function HeroSection({ onImageChange, onProcess, loading, image }
           alt="Star"
         />
 
-        {/* Star phải */}
-        <img
-          className="absolute right-[-18px] bottom-[8px] h-[61px] w-14"
-          src="https://c.animaapp.com/mr98ygdi58TZ2c/img/star-8.svg"
-          alt="Star"
-        />
-
         {/* 1. Red background - Thêm hiệu ứng to lên 20% (scale-[1.2]) nếu có ảnh */}
         <div className={`absolute left-1/2 top-[3px] h-[196px] w-[266px] -translate-x-1/2 rotate-[-1.84deg] bg-[#ff0000] transition-transform duration-500 ease-in-out ${image ? "scale-[1.15]" : ""}`} />
-
+        
         {/* 2. Content card - Cùng to lên 20% để kéo theo rectangle-26 */}
-        <div className={`absolute left-1/2 top-[12px] flex h-[174px] w-[250px] -translate-x-1/2 flex-col items-center justify-center overflow-hidden bg-[#F8E4CC] px-5 text-center transition-transform duration-500 ease-in-out ${image ? "scale-[1.15] px-0" : ""}`}>
+        <div className={`absolute left-1/2 top-[12px] flex h-[174px] w-[250px] -translate-x-1/2 flex-col items-center justify-center overflow-hidden bg-[#F8E4CC] px-5 text-center transition-transform duration-500 ease-in-out ${image ? "scale-[1.1] px-0" : ""}`}>
           
           {/* Texture overlay */}
           <img
@@ -153,6 +146,13 @@ export default function HeroSection({ onImageChange, onProcess, loading, image }
           )}
           
         </div>
+
+        {/* Star phải */}
+        <img
+          className="absolute right-[-18px] top-[110px] h-[61px] w-14"
+          src="https://c.animaapp.com/mr98ygdi58TZ2c/img/star-8.svg"
+          alt="Star"
+        />
       </div>
 
       <div className="absolute left-1/2 top-[485px] -translate-x-1/2 flex flex-col items-center gap-3">

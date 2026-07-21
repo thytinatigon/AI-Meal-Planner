@@ -36,7 +36,7 @@ export default function IngredientCheck({
   };
 
   return (
-    <section className="relative h-[986px] object-cover">
+    <section className="relative h-[872px] object-cover">
       <img className="absolute top-[-70px] left-[-14px] h-full w-full" alt="Rectangle" src="https://c.animaapp.com/mr98ygdi58TZ2c/img/rectangle-33.svg" />
       <div className="absolute left-[18px] w-full flex items-stretch gap-9">
         {stripes.map((stripe) => (
@@ -132,7 +132,7 @@ export default function IngredientCheck({
         <div className="mt-[40px] whitespace-nowrap text-center font-chelsea text-3xl tracking-widest">NOTE</div>
         
         <div className="flex w-full mt-[10px] px-[30px] flex-col gap-3 z-10">
-          {["ăn mặn", "ăn chay"].map((item) => {
+          {["normal", "vegan", "vegetarian", "on diet"].map((item) => {
             const checked = diet === item;
             
             return (
@@ -144,14 +144,14 @@ export default function IngredientCheck({
                   
                   {/* 2. Giữ nguyên dấu tick xanh lá tự vẽ */}
                   {checked && (
-                    <span className="pointer-events-none absolute text-[40px] leading-none text-[#4e9f08] -mt-2">
+                    <span className="pointer-events-none absolute text-[40px] leading-none text-[4E9F08] -mt-2">
                       ✓
                     </span>
                   )}
                 </div>
                 
-                <span className="font-sans text-[22px] font-normal leading-[normal] capitalize text-black group-hover:opacity-80 transition-opacity">
-                  {item === "ăn mặn" ? "Thịt/Cá" : "Ăn Chay"}
+                <span className="text-[22px] font-normal leading-[normal] capitalize text-black group-hover:opacity-80 transition-opacity [font-family:'DM_Sans',sans-serif]">
+                  {item}
                 </span>
                 
               </button>

@@ -97,7 +97,7 @@ export const useMealPlanner = () => {
 
     try {
       const imageData = await compressImage(image);
-      const response = await fetch("http://localhost:5000/api/analyze-image", {
+      const response = await fetch("https://ai-meal-planner-backend-wvk9.onrender.com/api/analyze-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(imageData),

@@ -38,16 +38,25 @@ app.post('/api/analyze-image', async (req, res) => {
   try {
     const { imageBase64, mimeType } = req.body;
     
-    // 1. System Instruction: Trợ lý thị giác
-    const systemInstruction = "Bạn là một AI chuyên gia thị giác máy tính. Nhiệm vụ của bạn là nhận diện chính xác các nguyên liệu nấu ăn có trong ảnh và gọi tên chúng bằng tiếng Việt.";
+    // 1. System Instruction: Ép buộc tuyệt đối bằng lệnh cấm
+    const systemInstruction = "You are an expert computer vision AI. Your task is to accurately identify the cooking ingredients present in the image. YOU MUST NAME THEM STRICTLY IN ENGLISH. DO NOT USE VIETNAMESE OR ANY OTHER LANGUAGE.";
     
-    const prompt = "Liệt kê các nguyên liệu nấu ăn bạn thấy trong ảnh này.";
-    
-    // 2. Schema: Ép khuôn thành Mảng các Chuỗi
+    const prompt = `
+      Analyze this image and identify all the food ingredients visible.
+      CRITICAL REQUIREMENTS:
+      1. You MUST return the ingredient names strictly in ENGLISH.
+      2. Return ONLY a plain JSON array of strings. 
+      3. Do not include markdown formatting like \`\`\`json, and do not add any extra text or explanations.
+      
+      Example output format:
+      ["egg", "carrot", "avocado", "orange juice"]
+  ` ;
+  
+    // 2. Schema: Cập nhật description để định hướng JSON
     const schema = {
       type: SchemaType.ARRAY,
       items: { type: SchemaType.STRING },
-      description: "Danh sách tên các nguyên liệu"
+      description: "List of ingredient names in English" 
     };
 
     const imagePart = { inlineData: { data: imageBase64, mimeType } };
@@ -58,7 +67,6 @@ app.post('/api/analyze-image', async (req, res) => {
 
     console.log("\n👁️ === KẾT QUẢ TỪ GEMINI (QUÉT ẢNH) ===");
     console.log(jsonString);
-    console.log("=========================================\n");
 
     res.json({ ingredients: JSON.parse(jsonString) });
 
@@ -81,8 +89,7 @@ app.post('/api/generate-recipe', async (req, res) => {
     
     console.log("\n👨‍🍳 === KẾT QUẢ TỪ GROQ (LÊN THỰC ĐƠN) ===");
     console.log(jsonString);
-    console.log("=========================================\n");
-
+    
     // Trả thẳng kết quả JSON về cho Frontend
     res.json(JSON.parse(jsonString));
 
