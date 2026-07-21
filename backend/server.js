@@ -6,8 +6,6 @@ const { callGeminiWithRetry } = require('./services/geminiService');
 const { callGroqRecipe } = require('./services/groqService');
 
 const app = express();
-
-const cors = require('cors');
 app.use(cors());
 
 // Quan trọng: Mở rộng giới hạn dung lượng vì ảnh Base64 rất nặng
