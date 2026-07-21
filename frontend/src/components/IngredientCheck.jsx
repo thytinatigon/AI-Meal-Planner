@@ -37,7 +37,7 @@ export default function IngredientCheck({
 
   return (
     <section className="relative h-[872px] object-cover">
-      <img className="absolute top-[-70px] left-[-14px] h-full w-full" alt="Rectangle" src="https://c.animaapp.com/mr98ygdi58TZ2c/img/rectangle-33.svg" />
+      <img className="absolute top-[-38px] left-[0px] " alt="Rectangle" src="/svg/Rectangle 33.svg" />
       <div className="absolute left-[18px] w-full flex items-stretch gap-9">
         {stripes.map((stripe) => (
           <div key={`stripe-${stripe}`} className="h-[872px] w-[50px] bg-[#ff0000]" />
