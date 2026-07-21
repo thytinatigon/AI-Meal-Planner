@@ -10,7 +10,8 @@ const app = express();
 const whitelist = [
   'http://localhost:5173', // Dành cho lúc bạn code trên máy
   'http://127.0.0.1:5173', // NẾU SAU NÀY BẠN ĐƯA LÊN MẠNG THÌ BỎ COMMENT DÒNG NÀY VÀ THÊM LINK VÀO
-  'https://ai-meal-planner-frontend-9yeu47e2x-thytina0526.vercel.app/'
+  'https://ai-meal-planner-frontend-9yeu47e2x-thytina0526.vercel.app',
+  'https://ai-meal-planner-frontend.vercel.app'
 ];
 
 const corsOptions = {
