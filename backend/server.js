@@ -7,28 +7,8 @@ const { callGroqRecipe } = require('./services/groqService');
 
 const app = express();
 
-const whitelist = [
-  'http://localhost:5173', // Dành cho lúc bạn code trên máy
-  'http://127.0.0.1:5173', // NẾU SAU NÀY BẠN ĐƯA LÊN MẠNG THÌ BỎ COMMENT DÒNG NÀY VÀ THÊM LINK VÀO
-  'https://ai-meal-planner-frontend-9yeu47e2x-thytina0526.vercel.app',
-  'https://ai-meal-planner-frontend.vercel.app'
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Cho phép gọi từ các domain trong whitelist, hoặc các tool như Postman (origin không xác định)
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Bị chặn bởi chính sách CORS của Let\'s Cook!'));
-    }
-  },
-  methods: ['GET', 'POST'], // Chỉ cho phép phương thức đọc và gửi
-  optionsSuccessStatus: 200
-};
-
-// Áp dụng ổ khóa CORS mới
-app.use(cors(corsOptions));
+const cors = require('cors');
+app.use(cors());
 
 // Quan trọng: Mở rộng giới hạn dung lượng vì ảnh Base64 rất nặng
 app.use(express.json({ limit: '50mb' })); 
