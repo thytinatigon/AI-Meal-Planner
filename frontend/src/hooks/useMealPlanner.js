@@ -1,5 +1,12 @@
 // File: src/hooks/useMealPlanner.js
 import { useState } from "react";
+import { normalizeIngredients, toggleIngredient as toggleInList, renameIngredient } from "../lib/ingredients";
+
+// Lấy thông báo lỗi của server (backend trả { error: "..." }) để hiện cho người dùng
+const readServerError = async (response, fallback) => {
+  const data = await response.json().catch(() => null);
+  return data?.error || fallback;
+};
 
 export const useMealPlanner = () => {
   const [image, setImage] = useState(null);
@@ -18,20 +25,27 @@ export const useMealPlanner = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Bạn hãy chọn đúng file ảnh nhé!");
+      e.target.value = ""; // Cho phép chọn lại cùng file sau khi báo lỗi
+      return;
     }
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   // HÀM fileToBase64
   const compressImage = (file) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
+      // Không có onerror thì Promise treo mãi, nút GENERATE kẹt "..." vĩnh viễn
+      reader.onerror = () => reject(new Error("Không đọc được file ảnh!"));
       reader.readAsDataURL(file);
       
       reader.onload = (event) => {
         const img = new Image();
+        img.onerror = () => reject(new Error("Ảnh không hợp lệ hoặc không được trình duyệt hỗ trợ!"));
         img.src = event.target.result;
         
         img.onload = () => {
@@ -96,14 +110,16 @@ export const useMealPlanner = () => {
         body: JSON.stringify(imageData),
       });
 
-      if (!response.ok) throw new Error("Lỗi từ server");
+      if (!response.ok) throw new Error(await readServerError(response, "Lỗi từ server"));
 
       const data = await response.json();
-      setDetectedIngredients(data.ingredients);
-      setSelectedIngredients(data.ingredients);
+      // Bỏ mục rỗng và mục trùng trước khi hiện ra danh sách
+      const ingredients = normalizeIngredients(data.ingredients);
+      setDetectedIngredients(ingredients);
+      setSelectedIngredients(ingredients);
     } catch (error) {
       console.error(error);
-      alert("Lỗi nhận diện ảnh!");
+      alert(error.message || "Lỗi nhận diện ảnh!");
     } finally {
       setLoading(false);
     }
@@ -127,16 +143,18 @@ export const useMealPlanner = () => {
 
   // Hiện khi bấm nút Cook
   const handleStartCooking = async () => {
-    if (selectedIngredients.length === 0) return alert("Hãy chọn ít nhất 1 nguyên liệu!");
+    // Bỏ mục rỗng (người dùng xoá hết chữ) và mục trùng trước khi gửi AI
+    const finalIngredients = normalizeIngredients(selectedIngredients);
+    if (finalIngredients.length === 0) return alert("Hãy chọn ít nhất 1 nguyên liệu!");
     setCooking(true);
     
     try {
       const response = await fetch("http://localhost:5000/api/generate-recipe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ finalIngredients: selectedIngredients, diet }),
+        body: JSON.stringify({ finalIngredients, diet }),
       });
-      if (!response.ok) throw new Error("Lỗi Server");
+      if (!response.ok) throw new Error(await readServerError(response, "Lỗi Server"));
       
       const data = await response.json();
       setRecipe(data);
@@ -145,40 +163,35 @@ export const useMealPlanner = () => {
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }, 100);
-    } catch {
-      alert("Đầu bếp AI đang bận!");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Đầu bếp AI đang bận!");
     } finally {
       setCooking(false);
     }
   };
 
   const toggleIngredient = (item) => {
-    if (item === "Add more") return;
-    setSelectedIngredients((prev) =>
-      prev.includes(item)
-        ? prev.filter((value) => value !== item)
-        : [...prev, item]
-    );
+    setSelectedIngredients((prev) => toggleInList(prev, item));
   };
 
   // HÀM MỚI: Cập nhật chữ trực tiếp khi người dùng gõ
   const updateIngredient = (index, newValue) => {
+    if (!detectedIngredients) return;
     const oldItem = detectedIngredients[index];
-    setDetectedIngredients((prev) => {
-      const newList = [...prev];
-      newList[index] = newValue;
-      return newList;
-    });
-    setSelectedIngredients((prev) => 
-      prev.map((val) => (val === oldItem ? newValue : val))
+    setDetectedIngredients((prev) =>
+      prev.map((value, i) => (i === index ? newValue : value))
     );
+    // Chỉ đổi đúng 1 vị trí, không đụng các mục trùng tên khác
+    setSelectedIngredients((prev) => renameIngredient(prev, oldItem, newValue));
   };
 
-  // HÀM MỚI: Thêm nguyên liệu
+  // HÀM MỚI: Thêm nguyên liệu (không thêm trùng tên đã có)
   const addIngredient = (newItem) => {
-    if (!newItem.trim()) return; 
-    setDetectedIngredients((prev) => [...prev, newItem]);
-    setSelectedIngredients((prev) => [...prev, newItem]);
+    const item = newItem.trim();
+    if (!item) return;
+    setDetectedIngredients((prev) => (prev.includes(item) ? prev : [...prev, item]));
+    setSelectedIngredients((prev) => (prev.includes(item) ? prev : [...prev, item]));
   };
 
   return {
