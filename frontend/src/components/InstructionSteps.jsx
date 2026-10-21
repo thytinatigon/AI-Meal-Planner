@@ -1,6 +1,5 @@
 // File: src/components/InstructionSteps.jsx
 import { Card, CardContent } from "./ui/card";
-import { Separator } from "./ui/separator";
 
 export default function InstructionSteps({ recipe }) {
   return (

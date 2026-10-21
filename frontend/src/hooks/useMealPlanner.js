@@ -1,13 +1,6 @@
 // File: src/hooks/useMealPlanner.js
 import { useState } from "react";
 
-const MOCK_DATA = [
-  "Lettuce", "Eggs", "Orange", "Strawberry", "Apple",
-  "Bell Pepper", "Tomato", "Eggplant", "Mushroom", "Green Onion", "Milk",
-  "Avocado", "Broccoli", "Lemon", "Cilantro", "Meat",
-  "Carrot", "Cucumber", "Potato"
-];
-
 export const useMealPlanner = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -152,7 +145,7 @@ export const useMealPlanner = () => {
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }, 100);
-    } catch (error) {
+    } catch {
       alert("Đầu bếp AI đang bận!");
     } finally {
       setCooking(false);
@@ -189,7 +182,6 @@ export const useMealPlanner = () => {
   };
 
   return {
-    image,
     loading,
     imagePreview,
     recipe,
