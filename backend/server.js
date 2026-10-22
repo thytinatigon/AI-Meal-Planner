@@ -22,6 +22,18 @@ const parseModelJson = (raw) => {
   }
 };
 
+// Model đôi khi gộp cả 5 bước vào 1 chuỗi có đánh số kiểu "1. ... 2. ..." -> tách ra cho đúng layout
+const splitSteps = (instructions) =>
+  instructions
+    .flatMap((step) => {
+      const parts = String(step)
+        .split(/\s*(?=\d+\.\s)/)
+        .map((part) => part.replace(/^\d+\.\s*/, "").trim())
+        .filter(Boolean);
+      return parts.length > 1 ? parts : [String(step).trim()];
+    })
+    .slice(0, 5); // Layout cố định 5 bước
+
 // ==========================================
 // API 1: QUÉT ẢNH TÌM NGUYÊN LIỆU
 // ==========================================
@@ -116,6 +128,7 @@ app.post('/api/generate-recipe', async (req, res) => {
     const dish = encodeURIComponent(String(recipe.dishName || "").trim());
     res.json({
       ...recipe,
+      instructions: splitSteps(recipe.instructions),
       youtubeLink: `https://www.youtube.com/results?search_query=how+to+cook+${dish}`,
       tiktokLink: `https://www.tiktok.com/search?q=how+to+cook+${dish}`,
     });
@@ -147,4 +160,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, parseModelJson };
+module.exports = { app, parseModelJson, splitSteps };

@@ -7,7 +7,50 @@ const assert = require('node:assert/strict');
 process.env.GEMINI_API_KEY ||= 'test-key';
 process.env.GROQ_API_KEY ||= 'test-key';
 
-const { app, parseModelJson } = require('../server');
+const { app, parseModelJson, splitSteps } = require('../server');
+const { RECIPE_SCHEMA, RESPONSE_FORMAT } = require('../services/groqService');
+
+// ==========================================
+// Groq phải dùng structured outputs (strict) để không bị 400 json_validate_failed
+// ==========================================
+
+test('Groq dùng json_schema strict: true (không dùng json_object)', () => {
+  assert.equal(RESPONSE_FORMAT.type, 'json_schema');
+  assert.equal(RESPONSE_FORMAT.json_schema.strict, true);
+});
+
+test('Schema công thức có đủ field frontend cần và đóng object', () => {
+  assert.deepEqual(RECIPE_SCHEMA.required, ['dishName', 'calories', 'instructions']);
+  assert.equal(RECIPE_SCHEMA.additionalProperties, false);
+  assert.equal(RECIPE_SCHEMA.properties.instructions.type, 'array');
+  assert.equal(RECIPE_SCHEMA.properties.instructions.items.type, 'string');
+});
+
+// ==========================================
+// Tách bước khi model gộp 5 bước vào 1 chuỗi
+// ==========================================
+
+test('splitSteps: tách chuỗi gộp "1. ... 2. ..." thành các bước riêng', () => {
+  const merged = '1. Rửa cà chua. 2. Đánh trứng. 3. Xào chảo. 4. Nêm nếm. 5. Dọn đĩa.';
+  assert.deepEqual(splitSteps([merged]), [
+    'Rửa cà chua.',
+    'Đánh trứng.',
+    'Xào chảo.',
+    'Nêm nếm.',
+    'Dọn đĩa.',
+  ]);
+});
+
+test('splitSteps: danh sách bước sẵn đúng thì giữ nguyên', () => {
+  const steps = ['Bước một', 'Bước hai', 'Bước ba'];
+  assert.deepEqual(splitSteps(steps), steps);
+});
+
+test('splitSteps: không cắt nhầm số đo kiểu "2 tbsp"', () => {
+  assert.deepEqual(splitSteps(['Mix 2 tbsp oil and 1.5 cups water']), [
+    'Mix 2 tbsp oil and 1.5 cups water',
+  ]);
+});
 
 let server;
 let baseUrl;
