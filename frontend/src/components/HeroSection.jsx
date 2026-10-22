@@ -1,6 +1,9 @@
 // File: src/components/HeroSection.jsx
 import { Button } from "./ui/button";
 import { useRef } from "react";
+import image1 from "../assets/image-1.webp";
+import image2 from "../assets/image-2.webp";
+import image3 from "../assets/image-3.webp";
 
 export default function HeroSection({ onImageChange, onProcess, loading, image }) {   
   const fileInputRef = useRef(null);
@@ -22,7 +25,7 @@ export default function HeroSection({ onImageChange, onProcess, loading, image }
       <div className="absolute left-[277px] top-[7px] h-[202px] w-[202px]">
         <img
           className="h-full w-full object-cover"
-          src="https://c.animaapp.com/mr98ygdi58TZ2c/img/image-1.png"
+          src={image1}
           alt="Image"
         />
         <img
@@ -41,8 +44,9 @@ export default function HeroSection({ onImageChange, onProcess, loading, image }
         />
         <img
           className="h-full w-full rotate-[15deg] object-cover drop-shadow-[-1px_4px_10px_rgba(0,0,0,0.2)]"
-          src="https://c.animaapp.com/mr98ygdi58TZ2c/img/image-2.png"
+          src={image2}
           alt="Image"
+          loading="lazy"
         />
       </div>  
       
@@ -55,7 +59,7 @@ export default function HeroSection({ onImageChange, onProcess, loading, image }
         />
         <img
           className="h-full w-full rotate-[-24.77deg] object-cover drop-shadow-[-1px_4px_10px_rgba(0,0,0,0.2)]"
-          src="https://c.animaapp.com/mr98ygdi58TZ2c/img/image-3.png"
+          src={image3}
           alt="Image"
         />
         <img
@@ -77,6 +81,7 @@ export default function HeroSection({ onImageChange, onProcess, loading, image }
           className="h-full w-full object-cover drop-shadow-[-1px_4px_10px_rgba(0,0,0,0.2)]"
           src="https://c.animaapp.com/mr98ygdi58TZ2c/img/image-4.png"
           alt="Image"
+          loading="lazy"
         />
 
         <img
