@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { normalizeIngredients, toggleIngredient as toggleInList, renameIngredient } from "../lib/ingredients";
 
+// Đổi backend mà không sửa code: đặt VITE_API_URL trong frontend/.env
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 // Lấy thông báo lỗi của server (backend trả { error: "..." }) để hiện cho người dùng
 const readServerError = async (response, fallback) => {
   const data = await response.json().catch(() => null);
@@ -104,7 +107,7 @@ export const useMealPlanner = () => {
 
     try {
       const imageData = await compressImage(image);
-      const response = await fetch("https://ai-meal-planner-backend-wvk9.onrender.com/api/analyze-image", {
+      const response = await fetch(`${API_URL}/api/analyze-image`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(imageData),
@@ -149,7 +152,7 @@ export const useMealPlanner = () => {
     setCooking(true);
     
     try {
-      const response = await fetch("http://localhost:5000/api/generate-recipe", {
+      const response = await fetch(`${API_URL}/api/generate-recipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ finalIngredients, diet }),
