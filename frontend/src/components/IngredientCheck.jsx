@@ -1,7 +1,6 @@
 // File: src/components/IngredientCheck.jsx
 import { useState } from "react";
 import { Card, CardContent } from "./ui/card";
-import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 
 const stripes = Array.from({ length: 5 }, (_, index) => index);

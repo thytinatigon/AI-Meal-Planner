@@ -1,8 +1,13 @@
 // File: src/components/InstructionSteps.jsx
 import { Card, CardContent } from "./ui/card";
-import { Separator } from "./ui/separator";
 
 export default function InstructionSteps({ recipe }) {
+  // AI có thể trả sai kiểu => chuẩn hoá trước để không làm màn hình trắng
+  const steps = (recipe?.instructions ?? []).filter(
+    (step) => typeof step === "string" && step.trim()
+  );
+  const dishName = recipe?.dishName ? String(recipe.dishName) : "";
+
   return (
     <section className="relative h-[786px] overflow-hidden bg-[#5f7d23]">
       {/* Background */}
@@ -27,14 +32,14 @@ export default function InstructionSteps({ recipe }) {
             {/* Header */}
             <header className="pt-[30px] text-center">
               <h2 className="whitespace-pre-line text-[28px] font-normal leading-8 tracking-[1.12px] text-black [font-family:'Chelsea_Market',cursive]">
-                {recipe ? recipe.dishName.toUpperCase() : "NAME OF\nTHE DISH"}
+                {dishName ? dishName.toUpperCase() : "NAME OF\nTHE DISH"}
               </h2>
 
-              {recipe && (
+              {recipe?.calories ? (
                 <p className="mt-2 text-lg font-bold tracking-widest text-black">
-                  🔥 {recipe.calories}
+                  🔥 {String(recipe.calories)}
                 </p>
-              )}
+              ) : null}
             </header>
 
             {/* Divider 1 */}
@@ -79,8 +84,8 @@ export default function InstructionSteps({ recipe }) {
 
             {/* Instruction List */}
             <ol className="absolute left-[22px] top-[220px] w-[273px] space-y-[22px]">
-              {recipe?.instructions?.length ? (
-                recipe.instructions.map((stepText, index) => {
+              {steps.length ? (
+                steps.map((stepText, index) => {
                   const bgRectangles = [
                     "https://c.animaapp.com/mr98ygdi58TZ2c/img/rectangle-38.svg",
                     "https://c.animaapp.com/mr98ygdi58TZ2c/img/rectangle-39.svg",

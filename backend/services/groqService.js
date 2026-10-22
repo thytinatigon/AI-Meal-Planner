@@ -11,6 +11,7 @@ const callGroqRecipe = async (ingredients, diet, maxRetries = 3) => {
 
   const systemPrompt = `Bạn là siêu đầu bếp Michelin kiêm chuyên gia dinh dưỡng. 
   Nhiệm vụ của bạn là tạo ra một bữa ăn từ nguyên liệu cho sẵn. 
+  Toàn bộ tên món ăn và các bước thực hiện phải viết bằng tiếng Việt.
   BẮT BUỘC TRẢ VỀ ĐỊNH DẠNG JSON CHUẨN NHƯ SAU, KHÔNG KÈM THEO BẤT KỲ VĂN BẢN NÀO KHÁC:
   {
     "dishName": "Tên món ăn",
@@ -28,7 +29,7 @@ const callGroqRecipe = async (ingredients, diet, maxRetries = 3) => {
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
-        model: "llama-3.1-8b-instant", 
+        model: "openai/gpt-oss-20b", 
         response_format: { type: "json_object" }, 
         temperature: 0.7, 
       });
