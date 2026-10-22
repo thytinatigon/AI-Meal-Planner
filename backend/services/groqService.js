@@ -4,11 +4,16 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Chế độ ăn trên UI là tiếng Việt nhưng prompt là tiếng Anh nên phải dịch trước
+const DIET_EN = {
+  "ăn mặn": "non-vegetarian (meat or fish)",
+  "ăn chay": "vegetarian (no meat, no fish)",
+};
+
 const callGroqRecipe = async (ingredients, diet, maxRetries = 3) => {
   let attempt = 0;
   let delay = 2000;
 
-  // CẬP NHẬT SYSTEM PROMPT
   const systemPrompt = `You are a Michelin-starred chef and expert nutritionist. 
   Your task is to identify a REAL, WELL-KNOWN, and POPULAR dish that uses the provided ingredients. 
   DO NOT invent, hallucinate, or create a new dish. The dish MUST be an authentic, existing recipe that has many tutorials on YouTube and TikTok.
@@ -19,8 +24,6 @@ const callGroqRecipe = async (ingredients, diet, maxRetries = 3) => {
   {
     "dishName": "Exact name of the real, existing dish (e.g., 'Spaghetti Carbonara', 'Pad Thai', 'Beef Bourguignon')",
     "calories": "Estimated calories (e.g., 450 kcal)",
-    "youtubeLink": "https://www.youtube.com/results?search_query=how+to+cook+[dish_name_encoded]",
-    "tiktokLink": "https://www.tiktok.com/search?q=how+to+cook+[dish_name_encoded]",
     "instructions": [
       "Detailed preparation... (e.g., washing, mincing, marinating, exact measurements)",
       "Initial cooking phase... (e.g., sautéing aromatics, searing proteins)",
@@ -31,7 +34,7 @@ const callGroqRecipe = async (ingredients, diet, maxRetries = 3) => {
   }`;
 
   // CẬP NHẬT USER PROMPT
-  const userPrompt = `Find the most famous, REAL-WORLD dish suitable for a '${diet}' diet that can be made using mostly these ingredients: ${ingredients.join(', ')}. 
+  const userPrompt = `Find the most famous, REAL-WORLD dish suitable for a '${DIET_EN[diet] || diet}' diet that can be made using mostly these ingredients: ${ingredients.join(', ')}. 
   Remember, it MUST be an existing traditional or famous dish, NOT a generated one. Return the detailed recipe in EXACTLY 5 steps. Return ONLY JSON.`;
 
   // Bao bọc toàn bộ bằng vòng lặp Retry
@@ -42,7 +45,7 @@ const callGroqRecipe = async (ingredients, diet, maxRetries = 3) => {
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
-        model: "llama-3.1-8b-instant", 
+        model: "openai/gpt-oss-20b", 
         response_format: { type: "json_object" }, 
         temperature: 0.3, // GIẢM TEMPERATURE XUỐNG
       });

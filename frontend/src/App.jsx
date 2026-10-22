@@ -7,7 +7,6 @@ import InstructionSteps from "./components/InstructionSteps";
 export default function App() {
   // Đã dọn dẹp sạch sẽ: Xóa các biến bị lặp lại và dùng đúng tên biến 'image'
   const {
-    image, // Sửa 'imagePreview' thành 'image' cho đúng với useMealPlanner
     imagePreview,
     loading,
     recipe,
