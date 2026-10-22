@@ -36,18 +36,18 @@ export default function IngredientCheck({
 
   return (
     <section className="relative h-[872px] object-cover">
-      <img className="absolute top-[-38px] left-[0px] " alt="Rectangle" src="/svg/Rectangle 33.svg" />
+      <img className="absolute top-[-38px] left-[0px] " alt="Rectangle" src="/svg/Rectangle 33.svg" loading="lazy" />
       <div className="absolute left-[18px] w-full flex items-stretch gap-9">
         {stripes.map((stripe) => (
           <div key={`stripe-${stripe}`} className="h-[872px] w-[50px] bg-[#ff0000]" />
         ))}
       </div>
-      <img className="absolute top-[-18px] left-[18px] h-[21px] w-[378px]" alt="Group" src="https://c.animaapp.com/mr98ygdi58TZ2c/img/group-7.png" />
+      <img className="absolute top-[-18px] left-[18px] h-[21px] w-[378px]" alt="Group" src="https://c.animaapp.com/mr98ygdi58TZ2c/img/group-7.png" loading="lazy" />
       
-      <img className="absolute left-[192px] h-[84px] -translate-x-1/2 rotate-[-5deg] shadow-[0_4px_4px_-2px_rgba(0,0,0,0.3)] object-cover z-10" alt="Clipped image" src="https://c.animaapp.com/mr98ygdi58TZ2c/img/clipped-image-20260703-232401-1.png" />
+      <img className="absolute left-[192px] h-[84px] -translate-x-1/2 rotate-[-5deg] shadow-[0_4px_4px_-2px_rgba(0,0,0,0.3)] object-cover z-10" alt="Clipped image" src="https://c.animaapp.com/mr98ygdi58TZ2c/img/clipped-image-20260703-232401-1.png" loading="lazy" />
       
       {decorativeStars.map((star, index) => (
-        <img key={`decorative-star-${index}`} className={star.className} alt={star.alt} src={star.src} />
+        <img key={`decorative-star-${index}`} className={star.className} alt={star.alt} src={star.src} loading="lazy" />
       ))}
 
 

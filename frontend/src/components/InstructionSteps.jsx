@@ -23,6 +23,7 @@ export default function InstructionSteps({ recipe }) {
         src="/svg/Frame 9.svg"
         alt="Frame"
         className="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
       />
 
       {/* Center */}
@@ -32,6 +33,7 @@ export default function InstructionSteps({ recipe }) {
           src="/svg/Rectangle 37.svg"
           alt=""
           className="absolute inset-0 h-full w-full object-fill"
+          loading="lazy"
         />
 
         <Card className="relative rounded-none border-0 bg-transparent shadow-none">
