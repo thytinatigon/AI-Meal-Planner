@@ -146,9 +146,11 @@ app.post('/api/generate-recipe', async (req, res) => {
 app.use((err, req, res, next) => {
   console.error("Lỗi server:", err);
   const status = err.status || err.statusCode || 500;
-  res.status(status).json({
-    error: status === 400 ? "Dữ liệu gửi lên không hợp lệ" : "Lỗi máy chủ"
-  });
+  const messages = {
+    400: "Dữ liệu gửi lên không hợp lệ",
+    413: "Dữ liệu gửi lên quá lớn, vui lòng chọn ảnh nhỏ hơn!",
+  };
+  res.status(status).json({ error: messages[status] || "Lỗi máy chủ" });
 });
 
 const PORT = process.env.PORT || 5000;
