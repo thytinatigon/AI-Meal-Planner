@@ -1,17 +1,34 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { SchemaType } = require('@google/generative-ai');
 const { callGeminiWithRetry } = require('./services/geminiService');
 const { callGroqRecipe } = require('./services/groqService');
 
 const app = express();
 
+// Chạy sau 1 proxy (Render) -> không set thì req.ip là IP proxy, mọi người dùng chung 1 rổ rate limit
+app.set('trust proxy', 1);
+
 // CORS mở hoàn toàn để app chạy được trên mọi máy (điện thoại, máy khác trong LAN)
 app.use(cors());
 
-// Quan trọng: Mở rộng giới hạn dung lượng vì ảnh Base64 rất nặng
-app.use(express.json({ limit: '50mb' }));
+// Ảnh đã nén ở frontend (<=800px JPEG) nên 10mb là dư
+app.use(express.json({ limit: '10mb' }));
+
+// Giới hạn số lần gọi 2 API tốn quota AI. Đổi bằng biến RATE_LIMIT_MAX (request/phút)
+const createAiLimiter = (options = {}) =>
+  rateLimit({
+    windowMs: 60 * 1000,
+    limit: Number(process.env.RATE_LIMIT_MAX) || 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Bạn thao tác quá nhanh, vui lòng thử lại sau 1 phút!" },
+    ...options,
+  });
+
+const aiLimiter = createAiLimiter();
 
 // Parse JSON do AI trả về. JSON hỏng là lỗi phía upstream (502) chứ không phải lỗi server
 const parseModelJson = (raw) => {
@@ -37,7 +54,7 @@ const splitSteps = (instructions) =>
 // ==========================================
 // API 1: QUÉT ẢNH TÌM NGUYÊN LIỆU
 // ==========================================
-app.post('/api/analyze-image', async (req, res) => {
+app.post('/api/analyze-image', aiLimiter, async (req, res) => {
   const { imageBase64, mimeType } = req.body || {};
 
   // Kiểm tra dữ liệu đầu vào trước khi gọi AI
@@ -97,7 +114,7 @@ app.post('/api/analyze-image', async (req, res) => {
 // ==========================================
 // API 2: TẠO CÔNG THỨC TỪ NGUYÊN LIỆU
 // ==========================================
-app.post('/api/generate-recipe', async (req, res) => {
+app.post('/api/generate-recipe', aiLimiter, async (req, res) => {
   const { finalIngredients, diet } = req.body || {};
 
   // Kiểm tra dữ liệu đầu vào trước khi gọi AI
@@ -146,9 +163,11 @@ app.post('/api/generate-recipe', async (req, res) => {
 app.use((err, req, res, next) => {
   console.error("Lỗi server:", err);
   const status = err.status || err.statusCode || 500;
-  res.status(status).json({
-    error: status === 400 ? "Dữ liệu gửi lên không hợp lệ" : "Lỗi máy chủ"
-  });
+  const messages = {
+    400: "Dữ liệu gửi lên không hợp lệ",
+    413: "Dữ liệu gửi lên quá lớn, vui lòng chọn ảnh nhỏ hơn!",
+  };
+  res.status(status).json({ error: messages[status] || "Lỗi máy chủ" });
 });
 
 const PORT = process.env.PORT || 5000;
@@ -160,4 +179,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, parseModelJson, splitSteps };
+module.exports = { app, parseModelJson, splitSteps, createAiLimiter };

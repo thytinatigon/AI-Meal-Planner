@@ -6,8 +6,10 @@ const assert = require('node:assert/strict');
 // Các test dưới đây đều bị chặn TRƯỚC khi gọi AI, nên không cần API key thật
 process.env.GEMINI_API_KEY ||= 'test-key';
 process.env.GROQ_API_KEY ||= 'test-key';
+// Cả bộ test gửi hơn 10 request tới /api nên nâng giới hạn; test 429 dùng limiter riêng ở dưới
+process.env.RATE_LIMIT_MAX = '1000';
 
-const { app, parseModelJson, splitSteps } = require('../server');
+const { app, parseModelJson, splitSteps, createAiLimiter } = require('../server');
 const { RECIPE_SCHEMA, RESPONSE_FORMAT } = require('../services/groqService');
 
 // ==========================================
@@ -187,4 +189,28 @@ test('body gửi lên không phải JSON thì trả 400 JSON, không lộ stack 
   assert.equal(status, 400);
   assert.equal(typeof body.error, 'string');
   assert.equal(body.stack, undefined);
+});
+
+test('rate limit: quá số request/phút thì trả 429 kèm thông báo tiếng Việt', async () => {
+  const express = require('express');
+  const limited = express();
+  limited.post('/x', createAiLimiter({ limit: 2 }), (req, res) => res.json({ ok: true }));
+  const srv = limited.listen(0);
+  const url = `http://127.0.0.1:${srv.address().port}/x`;
+
+  try {
+    const statuses = [];
+    for (let i = 0; i < 3; i++) {
+      const res = await fetch(url, { method: 'POST' });
+      statuses.push(res.status);
+      if (res.status === 429) {
+        const body = await res.json();
+        assert.equal(typeof body.error, 'string');
+        assert.match(body.error, /thử lại sau/);
+      }
+    }
+    assert.deepEqual(statuses, [200, 200, 429]);
+  } finally {
+    srv.close();
+  }
 });
