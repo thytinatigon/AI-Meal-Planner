@@ -167,6 +167,7 @@ export default function HeroSection({ onImageChange, onProcess, loading, image }
           type="file" 
           accept="image/*" 
           capture="environment" 
+          aria-label="Chọn ảnh nguyên liệu"
           onChange={onImageChange} 
           ref={fileInputRef} 
           className="hidden" 
