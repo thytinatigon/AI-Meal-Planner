@@ -28,10 +28,6 @@ export const useMealPlanner = () => {
     if (imagePreview) URL.revokeObjectURL(imagePreview);
   }, [imagePreview]);
 
-
-  // const [detectedIngredients, setDetectedIngredients] = useState(MOCK_DATA); 
-  // const [selectedIngredients, setSelectedIngredients] = useState(MOCK_DATA);
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
