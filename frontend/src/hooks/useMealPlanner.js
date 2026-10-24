@@ -1,5 +1,5 @@
 // File: src/hooks/useMealPlanner.js
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { normalizeIngredients, toggleIngredient as toggleInList, renameIngredient } from "../lib/ingredients";
 
 // Đổi backend mà không sửa code: đặt VITE_API_URL trong frontend/.env
@@ -21,6 +21,12 @@ export const useMealPlanner = () => {
   const [diet, setDiet] = useState("ăn mặn");
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [showInstructions, setShowInstructions] = useState(false);
+
+  // Object URL cũ phải thu hồi, không thì mỗi lần đổi ảnh là giữ thêm 1 ảnh trong RAM.
+  // Cleanup chạy khi imagePreview đổi (thu hồi URL trước) và khi component bị huỷ.
+  useEffect(() => () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+  }, [imagePreview]);
 
 
   // const [detectedIngredients, setDetectedIngredients] = useState(MOCK_DATA); 
