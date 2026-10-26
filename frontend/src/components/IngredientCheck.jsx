@@ -86,6 +86,7 @@ export default function IngredientCheck({
                         {/* Phần 2: Ô Input thuần túy để người dùng gõ/sửa thoải mái */}
                         <input 
                           type="text"
+                          aria-label={`Nguyên liệu ${index + 1}`}
                           value={item}
                           onChange={(e) => updateIngredient(index, e.target.value)}
                           className="font-sans text-[20px] font-normal leading-[normal] text-black bg-transparent border-none outline-none w-full"
@@ -105,6 +106,7 @@ export default function IngredientCheck({
                   <div className="flex-shrink-0 mt-[4px] flex items-center justify-center h-2 w-2 rounded border-[0.5px] border-dashed border-black"></div>
                   <input 
                     type="text"
+                    aria-label="Thêm nguyên liệu"
                     value={ghostText}
                     onChange={(e) => setGhostText(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleGhostSubmit()}
@@ -139,7 +141,7 @@ export default function IngredientCheck({
                 
                 <div className="relative flex h-6 w-6 items-center justify-center">
                   {/* 1. Thay <Checkbox> bằng 1 cái <div> bình thường vẽ viền đứt khúc */}
-                  <div className={`h-6 w-6 border-black border-dashed ${checked ? 'border' : 'border'}`}></div>
+                  <div className="h-6 w-6 border border-black border-dashed"></div>
                   
                   {/* 2. Giữ nguyên dấu tick xanh lá tự vẽ */}
                   {checked && (
